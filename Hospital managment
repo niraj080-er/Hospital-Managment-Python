@@ -1,0 +1,360 @@
+from tkinter import *
+from PIL import Image, ImageTk
+from tkinter import ttk
+from tkinter import messagebox
+import pymysql
+class hospital:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Home Page")
+        self.root.resizable(False, False)
+        self.x = ImageTk.PhotoImage(file='index.jpeg')
+        self.y = Label(self.root, image=self.x).place(x=0, y=0, relwidth=1, relheight=1)
+        lbl = Label(self.root, text="Welcome To Vashudev Hospital", font=("times new roman ", 35), fg='green',bg="black", justify=CENTER)
+        lbl.place(x=0, y=5, width=2000)
+        onlineappo = Button(self.root, text="Click Here To Online Appoinment ",font=("times new roman", 20, "bold underline"),fg="#d77337", bg="black", command=self.addapoinment)
+        onlineappo.place(x=0, y=10)
+        emergency = Button(self.root, text="Click Here To Emergency Admission ",font=("times new roman", 20, "bold underline"),fg="#d77337", bg="black",command=self.emergencybooking)
+        emergency.place(x=1450, y=5)
+        frame = Frame(self.root, bg="white")
+        frame.place(x=750, y=200, height=400, width=500)
+        title = Label(frame, text="Login Here", font=("Arial 35 "), fg="#d77337", bg="white").place(x=90, y=30)
+        show = Label(frame, text="Employee Login Area", font=("Arial 15 underline"), fg="#d77337", bg="white")
+        show.place(x=90, y=90)
+        userid = Label(frame, text="Username", font=("Arial 20"), fg="gray", bg="white")
+        userid.place(x=90, y=140)
+        self.userinput = Entry(frame, font=("times new roman", 15), bg="lightgray",bd=0)
+        self.userinput.place(x=90, y=180, width=350, height=35)
+        password = Label(frame, text="Password", font=("Arial 20"), fg="gray", bg="white")
+        password.place(x=90, y=220)
+        self.userpass = Entry(frame, font=("times new roman", 15), bg="lightgray",bd=0)
+        self.userpass.config(show="*")
+        self.userpass.place(x=90, y=260, width=350, height=35)
+        forgetpass = Button(frame,text="Forget Password?", font=("times new roman ", 14), bg="white",fg="#d77337",bd=0)
+        forgetpass.place(x=90, y=300)
+        login = Button(frame, text="Login",cursor="hand1", font=("times new roman ", 16), bg="#d77337",bd=0,command=self.login)
+        login.place(x=90, y=350, width=150, height=40)
+        signup = Button(frame, text="SignUp",font=("times new roman", 16),cursor="hand2", bg="#d77337", command=self.signup,bd=0)
+        signup.place(x=300, y=350, width=150, height=40)
+    def login(self):
+        if self.userinput.get()=="" or self.userpass.get()=="":
+            messagebox.showinfo("Opps!!","Please Enter UserID\Password")
+        else:
+            try:
+                connection = pymysql.connect(host="localhost", user="root", password="Adarsh@123", database="vashudev")
+                cur = connection.cursor()
+                cur.execute("select * from signup where email=%s and password=%s",
+                            (self.userinput.get(), self.userpass.get()))
+                row = cur.fetchone()
+                if row == None:
+                    messagebox.showerror("Error!", "Invalid USERNAME & PASSWORD")
+                else:
+                    messagebox.showinfo("Successfully Login", "Wellcome to the Vashudev Hospital")
+                    self.clear_login()
+                    self.afterlogin()
+                    connection.close()
+            except Exception as e:
+                messagebox.showerror("Error!", "Error Occur")
+    def clear_login(self):
+        self.userinput.delete(0, END)
+        self.userpass.delete(0, END)
+    def signup(self):
+        self.root = Tk()
+        self.root.title("sign Up")
+        self.root.config(bg = "white")
+        self.root.geometry("1000x850")
+        self.root.resizable(False, False)
+        show= Label(self.root, text="Fill the Details Carefully!!", font=("times new roman", 20, "bold underline"),bg="white")
+        show.pack()
+        title1 = Label(self.root ,text="Sign Up", font=("times new roman", 25, "bold"),bg="white")
+        title1.place(x=200, y=80)
+        title2 = Label(self.root, text="Join with us", font=("times new roman", 13),bg="white")
+        title2.place(x=200,y=120)
+        fname = Label(self.root, text="Full name", font=("helvetica", 15, "bold"),bg="white").place(x=200, y=180)
+        self.name = Entry(self.root, font=("arial"),bg="lightgray",bd=0,justify=CENTER)
+        self.name.place(x=200, y=210, width=600,height=30)
+        email = Label(self.root, text="Email", font=("helvetica", 15, "bold"), bg="white").place(x=200, y=270)
+        self.email= Entry(self.root, font=("arial"),bg="lightgray",bd=0,justify=CENTER)
+        self.email.place(x=200, y=300, width=600,height=30)
+        sec_question = Label(self.root, text="Gender", font=("helvetica", 15, "bold"), bg="white").place(x=200,y=360)
+        genderlist = ['Male', 'Female', 'Other']
+        self.gender= ttk.Combobox(self.root,values=genderlist, width=10, background='lightgray')
+        self.gender.place(x=200, y=390)
+        self.gender.set("Select")
+        mobile = Label(self.root, text="Mobile Number", font=("helvetica", 15, "bold"), bg="white").place(x=450, y=360)
+        self.mobile=Entry(self.root,font=("arial"),bg='lightgray',bd=0,justify=CENTER)
+        self.mobile.place(x=450,y=390,width=350,height=30)
+        eid= Label(self.root, text="Employee Id", font=("helvetica", 15, "bold"), bg="white").place(x=200, y=450)
+        self.empid= Entry(self.root, font=("arial"), bg='lightgray',bd=0,justify=CENTER)
+        self.empid.place(x=200, y=480, width=600, height=30)
+        password = Label(self.root, text="Password", font=("helvetica", 15, "bold"), bg="white").place(x=200, y=540)
+        self.password1 = Entry(self.root, font=("arial"), bg='lightgray', bd=0, justify=CENTER)
+        self.password1.place(x=200,y=570,width=600,height=30)
+        self.password1.config(show="*")
+        confrom= Label(self.root, text="Reenter Password", font=("helvetica", 15, "bold"), bg="white").place(x=200, y=630)
+        self.password2= Entry(self.root, font=("arial"), bg='lightgray', bd=0, justify=CENTER)
+        self.password2.place(x=200,y=660,width=600,height=30)
+        self.terms = IntVar()
+        self.terms_and_con = Checkbutton(self.root, text="I Agree The Terms & Conditions", variable=self.terms,onvalue=1, offvalue=0, bg="white", font=("times new roman", 12)).place(x=200,y=710)
+        self.signup = Button(self.root, text="Sign Up",font=("times new roman", 18, "bold"),bd=0, cursor="hand2", bg='#d77337', fg="white",command=self.addaccount).place(x=430, y=750, width=200)
+
+    def addapoinment(self):
+        self.root = Tk()
+        self.root.title("Patient Appointment")
+        self.root.geometry("1400x800+0+0")
+        self.root.resizable(False, False)
+        self.root.configure(bg='lightgreen')
+        self.heading = Label(self.root, text="Vashudev Hospital Appointments", font=('arial 50 bold underline '),fg='#d77337', bg='lightgreen')
+        self.heading.pack()
+        self.name = Label(self.root, text="Patient's Name", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.name.place(x=300, y=150)
+        self.entname = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.entname.place(x=550, y=150)
+        self.age = Label(self.root, text="Age", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.age.place(x=300, y=200)
+        self.entage = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.entage.place(x=550, y=200)
+        self.lgender = Label(self.root, text="Gender", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.lgender.place(x=300, y=250)
+        genderlist = ['Male', 'Female', 'Other']
+        self.gender = ttk.Combobox(self.root, values=genderlist, width=10, background='lightgray')
+        self.gender.place(x=550, y=250)
+        self.gender.set("Select")
+        self.location = Label(self.root, text="Location", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.location.place(x=300, y=300)
+        self.entlocation = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.entlocation.place(x=550, y=300)
+        self.time = Label(self.root, text="Appointment Time", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.time.place(x=300, y=400)
+        timelist = ['7 AM', '10 AM ', '12 Am ','2 PM','4 PM',]
+        self.apttime=StringVar()
+        self.time = ttk.Combobox(self.root,values=timelist, width=10, background='lightgray',textvariable=self.apttime)
+        self.time.place(x=550, y=400)
+        self.time.set("Select")
+        self.phone = Label(self.root, text="Phone Number", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.phone.place(x=300, y=350)
+        self.entphone = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.entphone.place(x=550, y=350)
+        self.ldate = Label(self.root, text="Date", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        self.ldate.place(x=300, y=450)
+        self.entdate = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.entdate.place(x=550, y=450)
+        self.submit = Button(self.root, text="Add Appointment", width=20, height=2, bg='#d77337',command=self.appoinment)
+        self.submit.place(x=600, y=550)
+    def appoinment(self):
+        if self.entname.get() == "" or self.entage.get() == "" or self.gender.get() == "" or self.entlocation.get() == "" or self.time.get() == "" or self.entphone.get() == "" or self.entdate.get() == "":
+            messagebox.showwarning("Error!", "Sorry!, All fields are required")
+        else:
+            connection = pymysql.connect(host="localhost", user="root", password="Adarsh@123", database="vashudev")
+            cur = connection.cursor()
+            cur.execute(
+                "insert into emergencybooking (patient_name,age,gender,location,mobileno,admit_time,date) values(%s,%s,%s,%s,%s,%s,%s)",
+                (
+                    self.entname.get(),
+                    self.entage.get(),
+                    self.gender.get(),
+                    self.entlocation.get(),
+                    self.entphone.get(),
+                    self.time.get(),
+                    self.entdate.get()
+                ))
+            connection.commit()
+            cur.close()
+            connection.close()
+            messagebox.showinfo("Congratulations! ","Your Appoinment Successful Fix")
+            self.reset_appoinment()
+
+    def reset_appoinment(self):
+            self.entname.delete(0, END)
+            self.entage.delete(0, END)
+            self.gender.delete(0, END)
+            self.entlocation.delete(0, END)
+            self.entphone.delete(0, END)
+            self.time.delete(0, END)
+            self.entdate.delete(0, END)
+
+    def addaccount(self):
+        if self.name.get() == "" or self.email.get() == "" or self.gender.get() == ""or self.mobile.get()=="" or self.empid.get()==""or self.password1.get() == ""or self.password2=="":
+            messagebox.showerror("Error!", "Sorry!, All fields are required")
+        else:
+                connection = pymysql.connect(host="localhost", user="root", password="Adarsh@123", database="vashudev")
+                cur = connection.cursor()
+                cur.execute(
+                        "insert into signup (name,email,gender,mobileno,empid,password) values(%s,%s,%s,%s,%s,%s)",
+                        (
+                            self.name.get(),
+                            self.email.get(),
+                            self.gender.get(),
+                            self.mobile.get(),
+                            self.empid.get(),
+                            self.password1.get()
+                        ))
+                connection.commit()
+                cur.close()
+                connection.close()
+
+                messagebox.showinfo("Congratulations!", "Register Successful")
+                self.reset_fields()
+
+    def reset_fields(self):
+        self.name.delete(0, END)
+        self.email.delete(0, END)
+        self.gender.delete(0, END)
+        self.mobile.delete(0,END)
+        self.password1.delete(0, END)
+        self.password2.delete(0, END)
+    def emergencybooking(self):
+        self.root = Tk()
+        self.root.title("Patient Emergency Booking")
+        self.root.geometry("1400x800+0+0")
+        self.root.resizable(False, False)
+        self.root.configure(bg='lightgreen')
+        heading = Label(self.root, text="Vashudev Hospital Appointments", font=('arial 50 bold underline '),fg='#d77337', bg='lightgreen')
+        heading.pack()
+        name = Label(self.root, text="Patient's Name", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        name.place(x=300, y=150)
+        self.pname = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.pname.place(x=550, y=150)
+        age = Label(self.root, text="Age", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        age.place(x=300, y=200)
+        self.p_age = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.p_age.place(x=550, y=200)
+        lgender = Label(self.root, text="Gender", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        lgender.place(x=300, y=250)
+        genderlist = ['Male', 'Female', 'Other']
+        self.p_gender = ttk.Combobox(self.root, values=genderlist, width=10, background='lightgray')
+        self.p_gender.place(x=550, y=250)
+        self.p_gender.set("Select")
+        location = Label(self.root, text="Location", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        location.place(x=300, y=300)
+        self.p_location = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.p_location.place(x=550, y=300)
+        time = Label(self.root, text="Admit Time", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        time.place(x=300, y=400)
+        self.admit_time=Entry(self.root,width=30,bg='lightgray',justify=CENTER)
+        self.admit_time.place(x=550, y=400)
+        phone = Label(self.root, text="Phone Number", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        phone.place(x=300, y=350)
+        self.p_phone = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.p_phone.place(x=550, y=350)
+        ldate = Label(self.root, text="Date", font=('arial 18 bold'), fg='#d77337', bg='lightgreen')
+        ldate.place(x=300, y=450)
+        self.admit_date = Entry(self.root, width=30, bg='lightgray', justify=CENTER)
+        self.admit_date.place(x=550, y=450)
+        self.submit = Button(self.root, text="Add Appointment", width=20, height=2, bg='#d77337',command=self.emergency)
+        self.submit.place(x=600, y=550)
+    def emergency(self):
+        if self.pname.get() == "" or self.p_age.get() == "" or  self.p_gender.get()  == "" or self.p_location.get() == "" or self.p_phone.get() == "" or self.p_phone.get() == "" or self.admit_time.get()=="" or self.admit_date.get()=="":
+             messagebox.showerror("Error!", "Sorry!, All fields are required")
+        else:
+            connection = pymysql.connect(host="localhost", user="root", password="Adarsh@123", database="vashudev")
+            cur = connection.cursor()
+            cur.execute(
+                "insert into emergencybooking (patient_name,age,gender,location,mobileno,admit_time,date) values(%s,%s,%s,%s,%s,%s,%s)",
+                (
+                    self.pname.get(),
+                    self.p_age.get(),
+                    self.p_gender.get(),
+                    self.p_location.get(),
+                    self.p_phone.get(),
+                    self.admit_time.get(),
+                    self.admit_date.get()
+                ))
+            connection.commit()
+            cur.close()
+            connection.close()
+            messagebox.showinfo("Thank You", "Booking Successfully")
+            self.reset_emergency()
+
+    def reset_emergency(self):
+        self.pname.delete(0, END)
+        self.p_age.delete(0, END)
+        self.p_gender.delete(0, END)
+        self.p_location.delete(0, END)
+        self.p_phone.delete(0, END)
+        self.admit_time.delete(0, END)
+        self.admit_date.delete(0, END)
+    def afterlogin(self):
+        self.root.destroy()
+        self.root=Tk()
+        self.root.title("Hospital Managment")
+        self.root.config(bg="white")
+        self.root.geometry("1900x1000")
+        self.root.resizable(False, False)
+        self.x = ImageTk.PhotoImage(file='index2.jpeg')
+        self.y = Label(self.root, image=self.x).place(x=0, y=0, relwidth=1, relheight=1)
+        self.lbl = Label(self.root, text="Welcome To Vashudev Hospital", font=("times new roman ", 35), fg='green', bg="black", justify=CENTER)
+        self.lbl.place(x=0, y=5, width=2000)
+        frame = Frame(self.root, bg="white")
+        frame.place(x=700, y=350, height=400, width=500)
+        title = Label(frame, text="Enter Details to Seach Patient", font=("Arial 20 "), fg="#d77337", bg="white").place(x=90, y=30)
+        patientname = Label(frame, text="Patient Name", font=("Arial 20"), fg="gray", bg="white")
+        patientname.place(x=90, y=100)
+        self.pname = Entry(frame, font=("times new roman", 15), bg="lightgray", bd=0)
+        self.pname.place(x=90, y=140, width=350, height=35)
+        mobile= Label(frame, text="Mobile No", font=("Arial 20"),fg="gray", bg="white")
+        mobile.place(x=90, y=180)
+        self.pmobile = Entry(frame, font=("times new roman", 15), bg="lightgray", bd=0)
+        self.pmobile.config(show="*")
+        self.pmobile.place(x=90, y=220, width=350, height=35)
+        search = Button(frame, text="Search", cursor="hand1", font=("times new roman ", 16), bg="#d77337", bd=0,command=self.searchpatient)
+        search.place(x=90, y=310, width=150, height=40)
+        reset = Button(frame, text="Reset", font=("times new roman", 16), cursor="hand2", bg="#d77337", bd=0,command=self.reset)
+        reset.place(x=300, y=310, width=150, height=40)
+    def searchpatient(self):
+        self.root = Tk()
+        self.root.title("Options")
+        self.root.geometry("1700x1000+0+0")
+        self.root.config(bg="white")
+
+        abc = []  # empty list
+
+        connection = pymysql.connect(host="localhost", user="root", password="Adarsh@123", database="vashudev")
+        cur = connection.cursor()
+
+        a = Label(self.root, text="P_NAME", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        a.place(x=0,y=10)
+        b = Label(self.root, text="AGE", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        b.place(x=90, y=10)
+        c = Label(self.root, text="GENDER", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        c.place(x=250, y=10)
+        d = Label(self.root, text="MOBILE NO", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        d.place(x=460, y=10)
+        e = Label(self.root, text="LOCATION", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        e.place(x=680, y=10)
+        f = Label(self.root, text="APO_TIME", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        f.place(x=900, y=10)
+        g = Label(self.root, text="DATE", fg="black", bg="white", font=("times new roman", 20, "bold"))
+        g.place(x=1100, y=10)
+        pname=self.pname
+       ## cur.execute("select a.patient_name,a.age,b.gender,b.mobile,b.patient_location,b.appointment_time,a.date from emergencybooking a, appointment b where a.mobileno=b.mobile")
+        cur.execute("select * from emergencybooking ")
+        abc = cur.fetchall()
+        j=50
+        for i in abc:
+            a = Label(self.root, text=i[0], fg="black", bg="white", font=("italic", 18))
+            a.place(x=0, y=j)
+            b = Label(self.root, text=i[1], fg="black", bg="white", font=("italic", 18))
+            b.place(x=90, y=j)
+            c = Label(self.root, text=i[2], fg="black", bg="white", font=("italic", 18))
+            c.place(x=250, y=j)
+            d = Label(self.root, text=i[3], fg="black", bg="white", font=("italic", 18))
+            d.place(x=460, y=j)
+            e = Label(self.root, text=i[4], fg="black", bg="white", font=("italic", 18))
+            e.place(x=680, y=j)
+            f = Label(self.root, text=i[5], fg="black", bg="white", font=("italic", 18))
+            f.place(x=900, y=j)
+            g = Label(self.root, text=i[6], fg="black", bg="white", font=("italic", 18))
+            g.place(x=1100, y=j)
+            j += 28
+
+    def reset(self):
+        self.pname.delete(0, END)
+        self.pmobile.delete(0, END)
+
+
+
+root = Tk()
+root.geometry("1900x1000")
+ob = hospital(root)
+root.mainloop()
